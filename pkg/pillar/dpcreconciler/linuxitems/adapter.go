@@ -182,7 +182,7 @@ func (c *AdapterConfigurator) Create(ctx context.Context, item depgraph.Item) er
 		c.Log.Error(err)
 		return err
 	}
-	// Get MAC address and create the alternate with the group bit toggled.
+	// Get MAC address and create the alternate with the U/L (Universal/Local) bit toggled.
 	macAddr := link.Attrs().HardwareAddr
 	altMacAddr := c.alternativeMAC(link.Attrs().HardwareAddr)
 	if len(altMacAddr) != 0 {
@@ -194,10 +194,39 @@ func (c *AdapterConfigurator) Create(ctx context.Context, item depgraph.Item) er
 			return err
 		}
 	}
+	// Disable IPv6 on the interface. If IPv6 is enabled globally then the kernel will
+	// send ICMPv6 multicast listener report packets on _all_ UP interfaces. This
+	// includes `keth` interfaces which will have the "local" MAC set. In scenarios
+	// when the node is connected to networking equipment that does MAC filtering/
+	// MAC authentication/802.1x this can cause problems due to the unexpected MAC
+	// address.
+	//
+	// We need to do this _before_ the interface is renamed because `types.IfRename`
+	// brings the interface UP after renaming it and that will trigger the ICMPv6
+	// packets. The IPv6 disable setting is preserved through the interface rename.
+	kernIPv6, err := kernelHasIPv6()
+	if err != nil {
+		c.Log.Error(err)
+		return err
+	}
+	if kernIPv6 {
+		if err := confIntfIPv6(adapter.IfName, true); err != nil {
+			c.Log.Error(err)
+			return err
+		}
+	} else {
+		c.Log.Notice("kernel IPv6 support is disabled")
+	}
 	if err := types.IfRename(c.Log, adapter.IfName, kernIfname); err != nil {
 		err = fmt.Errorf("IfRename(%s, %s) failed: %v",
 			adapter.IfName, kernIfname, err)
 		c.Log.Error(err)
+		// If renaming the interface failed we need to restore the IPv6 config.
+		if kernIPv6 {
+			if err := confIntfIPv6(adapter.IfName, false); err != nil {
+				c.Log.Error(err)
+			}
+		}
 		return err
 	}
 	// Create bridge and name it ethN, use macAddr.
@@ -274,7 +303,8 @@ func (c *AdapterConfigurator) setAdapterMTU(adapter Adapter, link netlink.Link) 
 }
 
 func (c *AdapterConfigurator) updateAdapterStaticIPs(link netlink.Link,
-	newIPs, prevIPs []*net.IPNet) error {
+	newIPs, prevIPs []*net.IPNet,
+) error {
 	newIPs, obsoleteIPs := generics.DiffSetsFn(newIPs, prevIPs, netutils.EqualIPNets)
 	for _, ipNet := range obsoleteIPs {
 		addr := &netlink.Addr{IPNet: ipNet}
@@ -297,7 +327,8 @@ func (c *AdapterConfigurator) updateAdapterStaticIPs(link netlink.Link,
 	return nil
 }
 
-// Create alternate MAC address with the group bit toggled.
+// Create alternate MAC address with the U/L (Universal/Local) bit toggled.
+// See https://en.wikipedia.org/wiki/MAC_address for U/L bit vs. I/G bit (Individual/Group).
 func (c *AdapterConfigurator) alternativeMAC(mac net.HardwareAddr) net.HardwareAddr {
 	var altMacAddr net.HardwareAddr
 	if len(mac) != 0 {
@@ -403,6 +434,19 @@ func (c *AdapterConfigurator) Delete(ctx context.Context, item depgraph.Item) er
 			kernIfname, adapter.IfName, err)
 		c.Log.Error(err)
 		return err
+	}
+	// Re-enable IPv6 on the interface. See the "Disable IPv6" comment interface
+	// Create() for details.
+	kernIPv6, err := kernelHasIPv6()
+	if err != nil {
+		c.Log.Error(err)
+		return err
+	}
+	if kernIPv6 {
+		if err := confIntfIPv6(adapter.IfName, false); err != nil {
+			c.Log.Error(err)
+			return err
+		}
 	}
 	return nil
 }
