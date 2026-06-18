@@ -245,6 +245,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   scsi = "off"
   bus = "pci.4"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk0"
 
 
@@ -280,6 +281,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   scsi = "off"
   bus = "pci.6"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk2"
 
 
@@ -310,6 +312,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net0"]
   driver = "virtio-net-pci"
@@ -317,6 +320,8 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   mac = "6a:00:03:61:a6:90"
   bus = "pci.7"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.8"]
   driver = "pcie-root-port"
@@ -333,6 +338,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net1"]
   driver = "virtio-net-pci"
@@ -340,6 +346,8 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   mac = "6a:00:03:61:a6:91"
   bus = "pci.8"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [chardev "charserial-usr0"]
   backend = "serial"
@@ -516,6 +524,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   scsi = "off"
   bus = "pci.4"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk0"
 
 
@@ -551,6 +560,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   scsi = "off"
   bus = "pci.6"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk2"
 
 
@@ -581,6 +591,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net0"]
   driver = "virtio-net-pci"
@@ -588,6 +599,8 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   mac = "6a:00:03:61:a6:90"
   bus = "pci.7"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.8"]
   driver = "pcie-root-port"
@@ -604,6 +617,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net1"]
   driver = "virtio-net-pci"
@@ -611,6 +625,8 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   mac = "6a:00:03:61:a6:91"
   bus = "pci.8"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [chardev "charserial-usr0"]
   backend = "serial"
@@ -757,6 +773,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   scsi = "off"
   bus = "pci.4"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk0"
 
 
@@ -792,6 +809,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   scsi = "off"
   bus = "pci.6"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk2"
 
 
@@ -822,6 +840,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net0"]
   driver = "virtio-net-pci"
@@ -829,6 +848,8 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   mac = "6a:00:03:61:a6:90"
   bus = "pci.7"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.8"]
   driver = "pcie-root-port"
@@ -845,6 +866,7 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net1"]
   driver = "virtio-net-pci"
@@ -852,6 +874,8 @@ func TestCreateDomConfigOnlyCom1(t *testing.T) {
   mac = "6a:00:03:61:a6:91"
   bus = "pci.8"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [chardev "charserial-usr0"]
   backend = "serial"
@@ -1363,6 +1387,7 @@ func domConfigArm64() string {
   scsi = "off"
   bus = "pci.4"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk0"
 
 
@@ -1398,6 +1423,7 @@ func domConfigArm64() string {
   scsi = "off"
   bus = "pci.6"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk2"
 
 
@@ -1444,6 +1470,7 @@ func domConfigArm64() string {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net0"]
   driver = "virtio-net-pci"
@@ -1451,6 +1478,8 @@ func domConfigArm64() string {
   mac = "6a:00:03:61:a6:90"
   bus = "pci.8"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.9"]
   driver = "pcie-root-port"
@@ -1467,6 +1496,7 @@ func domConfigArm64() string {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net1"]
   driver = "virtio-net-pci"
@@ -1474,6 +1504,8 @@ func domConfigArm64() string {
   mac = "6a:00:03:61:a6:91"
   bus = "pci.9"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.10"]
   driver = "pcie-root-port"
@@ -1654,6 +1686,7 @@ func domConfigAmd64FML() string {
   scsi = "off"
   bus = "pci.4"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk0"
 
 
@@ -1689,6 +1722,7 @@ func domConfigAmd64FML() string {
   scsi = "off"
   bus = "pci.6"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk2"
 
 
@@ -1735,6 +1769,7 @@ func domConfigAmd64FML() string {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net0"]
   driver = "virtio-net-pci"
@@ -1742,6 +1777,8 @@ func domConfigAmd64FML() string {
   mac = "6a:00:03:61:a6:90"
   bus = "pci.8"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.9"]
   driver = "pcie-root-port"
@@ -1758,6 +1795,7 @@ func domConfigAmd64FML() string {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net1"]
   driver = "virtio-net-pci"
@@ -1765,6 +1803,8 @@ func domConfigAmd64FML() string {
   mac = "6a:00:03:61:a6:91"
   bus = "pci.9"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.10"]
   driver = "pcie-root-port"
@@ -2226,6 +2266,7 @@ func domConfigAmd64() string {
   scsi = "off"
   bus = "pci.4"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk0"
 
 
@@ -2261,6 +2302,7 @@ func domConfigAmd64() string {
   scsi = "off"
   bus = "pci.6"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk2"
 
 
@@ -2307,6 +2349,7 @@ func domConfigAmd64() string {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net0"]
   driver = "virtio-net-pci"
@@ -2314,6 +2357,8 @@ func domConfigAmd64() string {
   mac = "6a:00:03:61:a6:90"
   bus = "pci.8"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.9"]
   driver = "pcie-root-port"
@@ -2330,6 +2375,7 @@ func domConfigAmd64() string {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net1"]
   driver = "virtio-net-pci"
@@ -2337,6 +2383,8 @@ func domConfigAmd64() string {
   mac = "6a:00:03:61:a6:91"
   bus = "pci.9"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.10"]
   driver = "pcie-root-port"
@@ -2537,6 +2585,7 @@ func domConfigContainerVNC() string {
   scsi = "off"
   bus = "pci.5"
   addr = "0x0"
+  num-queues = "2"
   drive = "drive-virtio-disk1"
 
 
@@ -2583,6 +2632,7 @@ func domConfigContainerVNC() string {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net0"]
   driver = "virtio-net-pci"
@@ -2590,6 +2640,8 @@ func domConfigContainerVNC() string {
   mac = "6a:00:03:61:a6:90"
   bus = "pci.7"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.8"]
   driver = "pcie-root-port"
@@ -2606,6 +2658,7 @@ func domConfigContainerVNC() string {
   script = "/etc/xen/scripts/qemu-ifup"
   downscript = "no"
   vhost = "on"
+  queues = "2"
 
 [device "net1"]
   driver = "virtio-net-pci"
@@ -2613,6 +2666,8 @@ func domConfigContainerVNC() string {
   mac = "6a:00:03:61:a6:91"
   bus = "pci.8"
   addr = "0x0"
+  mq = "on"
+  vectors = "6"
 
 [device "pci.9"]
   driver = "pcie-root-port"
@@ -3068,7 +3123,7 @@ func TestPCIAddressAllocator(t *testing.T) {
 	vnFiller := virtNetworkTemplateFiller{
 		file: &buffer,
 	}
-	err = vnFiller.do(virtualNetworks, types.HVM)
+	err = vnFiller.do(virtualNetworks, types.HVM, 1)
 	g.Expect(err).ToNot(HaveOccurred())
 	paFiller := pciAssignmentsTemplateFiller{
 		multifunctionDevices: multifunctionDevices,
@@ -3206,7 +3261,7 @@ func TestPCIAddressAllocator(t *testing.T) {
 
 	// Check generated config with the user-defined order.
 	buffer.Reset()
-	err = vnFiller.do(virtualNetworks, types.HVM)
+	err = vnFiller.do(virtualNetworks, types.HVM, 1)
 	g.Expect(err).ToNot(HaveOccurred())
 	err = paFiller.do(pciAssignments)
 	g.Expect(err).ToNot(HaveOccurred())

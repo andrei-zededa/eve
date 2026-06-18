@@ -422,6 +422,9 @@ const qemuDiskTemplate = `
   scsi = "off"
   bus = "pci.{{.PCIId}}"
   addr = "0x0"
+{{- if gt .NumQueues 1 }}
+  num-queues = "{{.NumQueues}}"
+{{- end}}
 {{- end}}
   drive = "drive-virtio-disk{{.DiskID}}"
 {{- else}}
@@ -453,6 +456,9 @@ const qemuNetTemplate = `
 {{- if eq .Driver "virtio-net-pci" }}
   vhost = "on"
 {{- end}}
+{{- if gt .Queues 1 }}
+  queues = "{{.Queues}}"
+{{- end}}
 
 [device "net{{.NetID}}"]
   driver = "{{.Driver}}"
@@ -462,6 +468,10 @@ const qemuNetTemplate = `
   addr = "0x0"
 {{- if and (eq .Driver "virtio-net-pci") (ne .MTU 0) }}
   host_mtu = "{{.MTU}}"
+{{- end}}
+{{- if and (eq .Driver "virtio-net-pci") (gt .Queues 1) }}
+  mq = "on"
+  vectors = "{{.Vectors}}"
 {{- end}}
 `
 
@@ -600,6 +610,12 @@ type tQemuNetContext struct {
 	Driver           string
 	Mac, Bridge, Vif string
 	MTU              uint16
+	// Queues is the number of virtio-net queue pairs. A value > 1 enables
+	// multi-queue on both the tap netdev and the virtio-net device.
+	Queues int
+	// Vectors is the number of MSI-X vectors the virtio-net device exposes
+	// when multi-queue is enabled (2*Queues + 2).
+	Vectors int
 }
 
 // Context for qemuSerialTemplate.
@@ -1442,7 +1458,7 @@ type virtNetworkTemplateFiller struct {
 }
 
 func (f *virtNetworkTemplateFiller) do(virtualNetworks []virtualNetwork,
-	virtMode types.VmMode) error {
+	virtMode types.VmMode, vCPUs int) error {
 	for _, virtNet := range virtualNetworks {
 		netContext := tQemuNetContext{
 			PCIId:  virtNet.pciDeviceID,
@@ -1456,6 +1472,16 @@ func (f *virtNetworkTemplateFiller) do(virtualNetworks []virtualNetwork,
 			netContext.Driver = "e1000"
 		} else {
 			netContext.Driver = "virtio-net-pci"
+			// Enable virtio-net multi-queue with one queue pair per vCPU so
+			// that network processing can be spread across all guest vCPUs.
+			// The guest still has to enable the extra queues at runtime, e.g.
+			// with `ethtool -L <iface> combined <n>`.
+			if vCPUs > 1 {
+				netContext.Queues = vCPUs
+				// One MSI-X vector per RX and TX queue, plus one for config
+				// changes and one for the control virtqueue.
+				netContext.Vectors = 2*vCPUs + 2
+			}
 		}
 		if err := tQemuNet.Execute(f.file, netContext); err != nil {
 			return logError("failed to write network template to config file: %v", err)
@@ -1765,7 +1791,7 @@ func (ctx KvmContext) CreateDomConfig(domainName string,
 	virtNetworksFiller := virtNetworkTemplateFiller{
 		file: file,
 	}
-	err = virtNetworksFiller.do(virtualNetworks, config.VirtualizationMode)
+	err = virtNetworksFiller.do(virtualNetworks, config.VirtualizationMode, config.VCpus)
 	if err != nil {
 		logrus.Error(err.Error())
 		return err
